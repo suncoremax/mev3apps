@@ -33,7 +33,7 @@ import java.io.OutputStream;
 
 public class MainActivity extends Activity {
 
-    private static final String APP_URL = "https://me-nine-pearl.vercel.app/";
+    private static final String APP_URL = "https://stock-apk-me.vercel.app/";
     private static final int FILE_CHOOSER_REQUEST = 100;
     private static final int LOCATION_PERMISSION_REQUEST = 200;
 
