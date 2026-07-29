@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AXIION Billboard</string>
+    <string name="brand_sub">ব্লুটুথ কন্ট্রোলার</string>
+
+    <!-- Connection -->
+    <string name="connect">সংযোগ করুন</string>
+    <string name="disconnect">সংযোগ বিচ্ছিন্ন করুন</string>
+    <string name="connecting">সংযোগ হচ্ছে…</string>
+    <string name="scanning">ডিভাইস খোঁজা হচ্ছে…</string>
+    <string name="connected">সংযুক্ত</string>
+    <string name="not_connected">সংযুক্ত নয়</string>
+    <string name="device_not_found">ডিভাইস খুঁজে পাওয়া যায়নি। বিলবোর্ড চালু আছে কিনা দেখুন।</string>
+    <string name="bt_not_supported">এই ফোনে ব্লুটুথ লো এনার্জি (BLE) সাপোর্ট নেই</string>
+    <string name="bt_off">ব্লুটুথ বন্ধ আছে — অনুগ্রহ করে চালু করুন</string>
+    <string name="permission_needed">চালিয়ে যেতে ব্লুটুথ অনুমতি প্রয়োজন</string>
+
+    <!-- Tabs -->
+    <string name="tab_picture">ছবি</string>
+    <string name="tab_text">টেক্সট</string>
+    <string name="tab_billboard">বিলবোর্ড</string>
+
+    <!-- Picture panel -->
+    <string name="pick_photo">ছবি বাছুন</string>
+    <string name="no_photo">কোনো ছবি বাছাই করা হয়নি</string>
+    <string name="photo_ready">✓ প্রস্তুত (১২৮×১২৮)</string>
+    <string name="duration_label">সময়কাল (সেকেন্ড)</string>
+
+    <!-- Text panel -->
+    <string name="text_hint">এখানে আপনার লেখা টাইপ করুন…</string>
+    <string name="color_label">লেখার রং</string>
+    <string name="scroll_label">স্ক্রল গতি</string>
+    <string name="scroll_static">স্থির</string>
+    <string name="scroll_slow">ধীর</string>
+    <string name="scroll_normal">স্বাভাবিক</string>
+    <string name="scroll_fast">দ্রুত</string>
+    <string name="scroll_vfast">অতি দ্রুত</string>
+
+    <!-- Billboard / manage panel -->
+    <string name="brightness_label">উজ্জ্বলতা</string>
+    <string name="slides_label">স্লাইড তালিকা</string>
+    <string name="refresh">রিফ্রেশ</string>
+    <string name="delete">মুছুন</string>
+    <string name="no_slides">কোনো স্লাইড নেই</string>
+    <string name="slide_image">📷 ছবি</string>
+
+    <!-- Actions / status -->
+    <string name="send">পাঠান</string>
+    <string name="sending">পাঠানো হচ্ছে…</string>
+    <string name="send_success">✓ পাঠানো সম্পন্ন</string>
+    <string name="send_failed">পাঠাতে ব্যর্থ হয়েছে, আবার চেষ্টা করুন</string>
+    <string name="empty_text_error">লেখা খালি রাখা যাবে না</string>
+    <string name="not_connected_error">প্রথমে বিলবোর্ডের সাথে সংযোগ করুন</string>
+</resources>

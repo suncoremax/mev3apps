@@ -1,0 +1,43 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.axiiontech.billboardble'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.axiiontech.billboardble"
+        // 23+ so runtime permission handling (Bluetooth/location) can use
+        // one consistent modern code path instead of also supporting the
+        // very old pre-Marshmallow permission model.
+        minSdk 23
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+        }
+        release {
+            minifyEnabled false
+            // Debug signing so the APK can be installed directly (sideloaded)
+            // without needing a Play Store release key.
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+}

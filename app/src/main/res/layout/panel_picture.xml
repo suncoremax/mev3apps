@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/bg_card"
+            android:padding="18dp">
+
+            <ImageView
+                android:id="@+id/imgPreview"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:background="@android:color/black"
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/pick_photo" />
+
+            <TextView
+                android:id="@+id/txtPhotoStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/no_photo"
+                android:textColor="@color/sub"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/btnPickPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/bg_tab_active_green"
+                android:text="@string/pick_photo"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/duration_label"
+            android:textColor="@color/sub"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <SeekBar
+                android:id="@+id/seekDurationPicture"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="29"
+                android:progress="4" />
+
+            <TextView
+                android:id="@+id/txtDurationPicture"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:text="৫ সে"
+                android:textColor="@color/txt"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnSendPicture"
+            style="@style/SendButton"
+            android:layout_marginTop="18dp"
+            android:text="@string/send" />
+
+        <ProgressBar
+            android:id="@+id/progressPicture"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:max="100"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/txtSendStatusPicture"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:textColor="@color/sub"
+            android:textSize="12sp" />
+    </LinearLayout>
+</ScrollView>
