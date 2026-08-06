@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_dark">#0B0F14</color>
+    <color name="bg_panel">#141C24</color>
+    <color name="bg_panel_light">#1C2833</color>
+
+    <color name="accent_cyan">#00E5FF</color>
+    <color name="accent_orange">#FF6B35</color>
+    <color name="accent_green">#00E676</color>
+    <color name="accent_red">#FF3B5C</color>
+    <color name="accent_yellow">#FFD23F</color>
+
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#8FA3B8</color>
+    <color name="text_dim">#5A6B7A</color>
+
+    <color name="joystick_base">#1C2833</color>
+    <color name="joystick_base_ring">#2A3A48</color>
+    <color name="joystick_knob_top">#00E5FF</color>
+    <color name="joystick_knob_bottom">#0091A8</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+</resources>
