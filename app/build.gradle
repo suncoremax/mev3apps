@@ -1,0 +1,49 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    // AXiion Limited — Drone Controller
+    // NOTE: this is a fresh application ID, not reused from any other project.
+    // Change it here (and nowhere else) if you want a different one before
+    // your first Play Store / production release — application ID changes
+    // after publishing create a "new app", so pick it deliberately.
+    namespace 'com.axiion.dronecontrol'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.axiion.dronecontrol"
+        minSdk 23
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+        }
+        release {
+            minifyEnabled false
+            // Debug signing so the APK can be installed directly without
+            // the Play Store / without you needing to manage a keystore yet.
+            // Swap in a real signingConfig before any public release.
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    buildFeatures {
+        viewBinding false
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'com.google.android.material:material:1.11.0'
+}
