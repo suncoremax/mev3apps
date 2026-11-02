@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark navy-black behind the adaptive launcher icon (matches the Axion artwork) -->
+    <color name="ic_launcher_background">#06165C</color>
+    <!-- Accent colour Android tints the small status-bar notification icon
+         with — the gold from the Axion DMS logo -->
+    <color name="notification_accent">#22D3EE</color>
+</resources>
