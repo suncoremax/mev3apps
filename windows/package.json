@@ -1,0 +1,11 @@
+{
+  "name": "gk-app", "version": "1.0.0", "main": "main.js", "description": "App",
+  "devDependencies": { "electron": "^31.0.0", "electron-builder": "^24.13.3" },
+  "build": {
+    "appId": "com.gk.app", "productName": "App",
+    "files": ["main.js", "offline.html", "config.json", "icon.png"],
+    "directories": { "output": "dist" },
+    "win": { "target": "nsis", "icon": "build/icon.png" },
+    "nsis": { "oneClick": true, "perMachine": false, "createDesktopShortcut": true, "shortcutName": "App" }
+  }
+}
