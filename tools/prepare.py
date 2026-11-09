@@ -1,5 +1,5 @@
 """Applies the client settings (from env vars) to the android/ or windows/ template."""
-import os, re, sys, json, urllib.request, io
+import os, re, sys, json, io
 from PIL import Image, ImageDraw
 
 E = os.environ.get
@@ -12,27 +12,20 @@ if not re.fullmatch(r'https?://[^\s"\'\\]+', url): sys.exit('Link must start wit
 if not re.fullmatch(r'#[0-9A-Fa-f]{6}', bg): bg = '#FFFFFF'
 
 def load_logo():
-    """Priority: file uploaded in repo logos/ folder -> logo link -> default logo.png"""
+    """Logo comes from a PNG uploaded to the repo logos/ folder (no links)."""
+    d = 'logos'
+    files = sorted(f for f in os.listdir(d) if re.search(r'\.(png|jpe?g|webp)$', f, re.I)) if os.path.isdir(d) else []
     lf = E('LOGO_FILE', '').strip()
     if lf:
-        if not re.fullmatch(r'[\w][\w .()-]*', lf): sys.exit('Logo file name is invalid: just the file name, e.g. shop.png')
-        cands = [lf] if re.search(r'\.(png|jpe?g|webp|gif)$', lf, re.I) else [lf + '.png', lf + '.jpg', lf + '.jpeg', lf + '.webp']
-        for c in cands:
-            if os.path.isfile(f'logos/{c}'):
-                print('logo: logos/' + c); return open(f'logos/{c}', 'rb').read()
-        have = ', '.join(sorted(os.listdir('logos'))) if os.path.isdir('logos') else '(logos folder missing)'
-        sys.exit(f'Logo file "{lf}" not found in the repo logos/ folder. Files there: {have}')
-    lu = E('LOGO_URL', '').strip()
-    if lu:
-        m = re.search(r'drive\.google\.com/file/d/([\w-]+)', lu) or re.search(r'drive\.google\.com/open\?id=([\w-]+)', lu)
-        if m: lu = f'https://drive.google.com/uc?export=download&id={m[1]}'
-        if 'dropbox.com' in lu: lu = re.sub(r'[?&]dl=0', '', lu) + ('&' if '?' in lu else '?') + 'dl=1'
-        try:
-            data = urllib.request.urlopen(urllib.request.Request(lu, headers={'User-Agent': 'Mozilla/5.0'}), timeout=30).read()
-            Image.open(io.BytesIO(data)).verify()
-            print('logo: downloaded from link'); return data
-        except Exception as ex:
-            sys.exit(f'Logo link is not a direct image ({ex}). Upload the PNG to the repo logos/ folder and use the "logo file" box instead.')
+        if not re.fullmatch(r'[\w][\w .()-]*', lf): sys.exit('Logo file name is invalid: type just the file name, e.g. shop.png')
+        low = {f.lower(): f for f in files}
+        for c in ([lf] if re.search(r'\.(png|jpe?g|webp)$', lf, re.I) else [lf + e for e in ('.png', '.jpg', '.jpeg', '.webp')]):
+            if c.lower() in low:
+                print('logo: logos/' + low[c.lower()]); return open(f'{d}/{low[c.lower()]}', 'rb').read()
+        sys.exit(f'Logo file \"{lf}\" not found in repo logos/ folder. Files there: {", ".join(files) or "(none)"}')
+    if len(files) == 1:
+        print('logo: only file in logos/ -> ' + files[0]); return open(f'{d}/{files[0]}', 'rb').read()
+    if len(files) > 1: print('WARNING: several logos in logos/ and no file name given -> using default logo.png')
     print('logo: default logo.png'); return open('logo.png', 'rb').read()
 raw = load_logo()
 logo = Image.open(io.BytesIO(raw)).convert('RGBA')

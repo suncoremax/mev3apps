@@ -48,16 +48,21 @@ function create() {
     if (url.startsWith(origin)) return { action: 'allow' };
     shell.openExternal(url); return { action: 'deny' };
   });
-  if (cfg.keyboard) wc.on('before-input-event', (ev, i) => {
-    if (i.type !== 'keyDown') return;
+  // Esc = Back is ALWAYS on (even if the other shortcuts are switched off), like the Android back button
+  wc.on('before-input-event', (ev, i) => {
+    if (i.type !== 'keyDown' || i.isAutoRepeat) return;   // auto-repeat: holding Esc must not skip many pages
     const k = i.key, c = i.control || i.meta, z = d => wc.setZoomLevel(wc.getZoomLevel() + d);
+    if (k === 'Escape' && !i.alt && !c && !i.shift) {
+      if (win.isFullScreen()) { win.setFullScreen(false); ev.preventDefault(); } else escBack();
+      return;
+    }
+    if (i.alt && k === 'ArrowLeft') { ev.preventDefault(); goBack(); return; }
+    if (i.alt && k === 'ArrowRight') { ev.preventDefault(); if (wc.canGoForward()) wc.goForward(); return; }
+    if (!cfg.keyboard) return;
     let h = true;
     if (k === 'F5' && i.shift || k === 'F5' && c || c && i.shift && k.toLowerCase() === 'r') wc.reloadIgnoringCache();
     else if (k === 'F5' || c && k.toLowerCase() === 'r') wc.reload();
     else if (k === 'F11') win.setFullScreen(!win.isFullScreen());
-    else if (k === 'Escape') { if (win.isFullScreen()) win.setFullScreen(false); else { escBack(); h = false; } }
-    else if (i.alt && k === 'ArrowLeft') { if (wc.canGoBack()) wc.goBack(); }
-    else if (i.alt && k === 'ArrowRight') { if (wc.canGoForward()) wc.goForward(); }
     else if (i.alt && k === 'Home') win.loadURL(cfg.url);
     else if (c && (k === '+' || k === '=')) z(0.5);
     else if (c && (k === '-' || k === '_')) z(-0.5);
