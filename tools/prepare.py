@@ -23,9 +23,13 @@ def load_logo():
             if c.lower() in low:
                 print('logo: logos/' + low[c.lower()]); return open(f'{d}/{low[c.lower()]}', 'rb').read()
         sys.exit(f'Logo file \"{lf}\" not found in repo logos/ folder. Files there: {", ".join(files) or "(none)"}')
-    if len(files) == 1:
-        print('logo: only file in logos/ -> ' + files[0]); return open(f'{d}/{files[0]}', 'rb').read()
-    if len(files) > 1: print('WARNING: several logos in logos/ and no file name given -> using default logo.png')
+    if files:
+        import subprocess
+        def age(f):
+            try: return int(subprocess.check_output(['git', 'log', '-1', '--format=%ct', '--', f'{d}/{f}'], text=True).strip() or 0)
+            except Exception: return int(os.path.getmtime(f'{d}/{f}'))
+        newest = max(files, key=age)
+        print('logo: newest file in logos/ -> ' + newest); return open(f'{d}/{newest}', 'rb').read()
     print('logo: default logo.png'); return open('logo.png', 'rb').read()
 raw = load_logo()
 logo = Image.open(io.BytesIO(raw)).convert('RGBA')

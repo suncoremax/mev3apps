@@ -9,8 +9,7 @@ Builds a client's **Android APK** and **Windows EXE** from one form. No local to
 ## Every new client
 1. Repo -> **Actions** tab -> **Build client app** -> **Run workflow**.
 2. Upload the logo PNG first: repo -> `logos/` folder -> **Add file -> Upload files** (square PNG, 512px+) -> commit.
-3. Fill the form: App name, Package name, Link, colour, and type the PNG file name (e.g. `shop.png`) in **logo file**.
-   Empty = the only PNG in `logos/`, or the default `logo.png` if there are several/none. (Logo links are no longer used.)
+3. Fill the form: App name, Package name, Link, colour. In **LOGO PNG** leave it empty to use the newest PNG you uploaded to `logos/`, or type the file name (e.g. `shop.png`). Logo links are no longer used.
 4. Wait ~5-8 min. Open the finished run -> **Artifacts** -> download `APK-...` / `EXE-...` (zip, extract it).
 
 ## Rules
