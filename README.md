@@ -17,7 +17,7 @@ Builds a client's **Android APK** and **Windows EXE** from one form. No local to
 - **Same package name = updates** the existing install. Keep each client's package name.
 - Android APKs use GitHub's per-build debug key, so an update will NOT install over an older APK built in a different run
   unless you add your own keystore. (Tell me if you want fixed signing.)
-- Windows: on-screen **← Back** button (top-left, always visible; works like Android back: calls the web app's `window.__onAndroidBack()` first, then browser history), **Esc = Back** (always on, like Android's back button; not while typing, in a popup, or fullscreen; Esc exits fullscreen first), mouse back button works too. Android keeps its own back button.
+- Windows: on-screen **← Back** button (top-left, appears when there is a page to go back to), **Esc = Back** (always on, like Android's back button; not while typing, in a popup, or fullscreen; Esc exits fullscreen first), mouse back button works too. Android keeps its own back button.
 - Windows keyboard shortcuts: F5/Ctrl+R reload, Ctrl+F5 hard reload, F11 fullscreen (Esc exits it), Alt+Left/Right back/forward,
   Alt+Home start page, Ctrl +/-/0 zoom, Ctrl+P print, Ctrl+Q quit.
 - Push notifications need a per-package `google-services.json` in `android/app/`.

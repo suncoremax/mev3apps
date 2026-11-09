@@ -26,10 +26,7 @@ function create() {
   ipcMain.on('refocus', refocus);
   // --- back navigation (mouse button on screen + Esc + Alt+Left + mouse back button) ---
   const sendNav = () => { if (!win.isDestroyed()) wc.send('nav-state', wc.canGoBack()); };
-  const histBack = () => { if (wc.canGoBack()) wc.goBack(); };
-  // Same order as the Android app: 1) web app's own window.__onAndroidBack()  2) browser history
-  const goBack = () => wc.executeJavaScript(`(function(){try{return !!(window.__onAndroidBack&&window.__onAndroidBack());}catch(e){return false;}})()`, true)
-    .then(handled => { if (!handled) histBack(); }).catch(histBack);
+  const goBack = () => { if (wc.canGoBack()) wc.goBack(); };
   ['did-navigate', 'did-navigate-in-page', 'did-frame-finish-load'].forEach(ev => wc.on(ev, sendNav));
   ipcMain.on('nav-ready', sendNav);
   ipcMain.on('nav-back', goBack);
@@ -44,10 +41,9 @@ function create() {
   });
   // Esc = Back, unless user is typing, a popup/modal is open, or fullscreen
   const escBack = () => wc.executeJavaScript(`(function(){var a=document.activeElement;
-    if(a&&(/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)||a.isContentEditable))return 'typing';
-    try{if(window.__onAndroidBack&&window.__onAndroidBack())return 'handled';}catch(e){}
-    return document.querySelector('dialog[open],[role=dialog],[role=alertdialog],[aria-modal=true],.modal.show,.modal.open,.swal2-container,.ant-modal,.MuiDialog-root')?'modal':'free';})()`, true)
-    .then(r => { if (r === 'free') histBack(); }).catch(() => {});
+    if(a&&(/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)||a.isContentEditable))return false;
+    return !document.querySelector('dialog[open],[role=dialog],[role=alertdialog],[aria-modal=true],.modal.show,.modal.open,.swal2-container,.ant-modal,.MuiDialog-root');})()`, true)
+    .then(ok => { if (ok) goBack(); }).catch(() => {});
   wc.setWindowOpenHandler(({ url }) => {
     if (url.startsWith(origin)) return { action: 'allow' };
     shell.openExternal(url); return { action: 'deny' };
