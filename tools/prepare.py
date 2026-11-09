@@ -11,8 +11,30 @@ if not re.fullmatch(r'[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+', pkg): sys.exit('Pack
 if not re.fullmatch(r'https?://[^\s"\'\\]+', url): sys.exit('Link must start with https://')
 if not re.fullmatch(r'#[0-9A-Fa-f]{6}', bg): bg = '#FFFFFF'
 
-logo_url = E('LOGO_URL', '').strip()
-raw = urllib.request.urlopen(urllib.request.Request(logo_url, headers={'User-Agent': 'gk'})).read() if logo_url else open('logo.png', 'rb').read()
+def load_logo():
+    """Priority: file uploaded in repo logos/ folder -> logo link -> default logo.png"""
+    lf = E('LOGO_FILE', '').strip()
+    if lf:
+        if not re.fullmatch(r'[\w][\w .()-]*', lf): sys.exit('Logo file name is invalid: just the file name, e.g. shop.png')
+        cands = [lf] if re.search(r'\.(png|jpe?g|webp|gif)$', lf, re.I) else [lf + '.png', lf + '.jpg', lf + '.jpeg', lf + '.webp']
+        for c in cands:
+            if os.path.isfile(f'logos/{c}'):
+                print('logo: logos/' + c); return open(f'logos/{c}', 'rb').read()
+        have = ', '.join(sorted(os.listdir('logos'))) if os.path.isdir('logos') else '(logos folder missing)'
+        sys.exit(f'Logo file "{lf}" not found in the repo logos/ folder. Files there: {have}')
+    lu = E('LOGO_URL', '').strip()
+    if lu:
+        m = re.search(r'drive\.google\.com/file/d/([\w-]+)', lu) or re.search(r'drive\.google\.com/open\?id=([\w-]+)', lu)
+        if m: lu = f'https://drive.google.com/uc?export=download&id={m[1]}'
+        if 'dropbox.com' in lu: lu = re.sub(r'[?&]dl=0', '', lu) + ('&' if '?' in lu else '?') + 'dl=1'
+        try:
+            data = urllib.request.urlopen(urllib.request.Request(lu, headers={'User-Agent': 'Mozilla/5.0'}), timeout=30).read()
+            Image.open(io.BytesIO(data)).verify()
+            print('logo: downloaded from link'); return data
+        except Exception as ex:
+            sys.exit(f'Logo link is not a direct image ({ex}). Upload the PNG to the repo logos/ folder and use the "logo file" box instead.')
+    print('logo: default logo.png'); return open('logo.png', 'rb').read()
+raw = load_logo()
 logo = Image.open(io.BytesIO(raw)).convert('RGBA')
 
 def fit(canvas, f):

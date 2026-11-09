@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, shell } = require('electron');
+const { app, BrowserWindow, Menu, shell, ipcMain } = require('electron');
 const path = require('path'), fs = require('fs');
 const cfg = JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8'));
 const origin = new URL(cfg.url).origin;
@@ -6,16 +6,44 @@ app.setName(cfg.name);
 if (!app.requestSingleInstanceLock()) { app.quit(); }
 let win;
 function create() {
-  Menu.setApplicationMenu(null);
+  // Hidden menu keeps Ctrl+C/V/X/A/Z working in text boxes (a null menu breaks them on Windows)
+  Menu.setApplicationMenu(Menu.buildFromTemplate([{ label: 'Edit', submenu: [
+    { role: 'undo' }, { role: 'redo' }, { type: 'separator' }, { role: 'cut' }, { role: 'copy' }, { role: 'paste' }, { role: 'selectAll' }] }]));
   win = new BrowserWindow({ width: 1280, height: 800, minWidth: 800, minHeight: 560, title: cfg.name,
-    icon: path.join(__dirname, 'icon.png'), autoHideMenuBar: true, backgroundColor: '#ffffff',
-    webPreferences: { contextIsolation: true, sandbox: true } });
+    icon: path.join(__dirname, 'icon.png'), backgroundColor: '#ffffff',
+    webPreferences: { contextIsolation: true, sandbox: true, preload: path.join(__dirname, 'preload.js') } });
+  win.setMenuBarVisibility(false);
   win.loadURL(cfg.url);
   const wc = win.webContents;
   wc.on('did-fail-load', (e, code, d, url, isMain) => {
     if (isMain && code !== -3) win.loadFile(path.join(__dirname, 'offline.html'), { query: { u: cfg.url } });
   });
   wc.on('page-title-updated', e => e.preventDefault());
+  // --- keyboard focus recovery ---
+  const refocus = () => { if (!win.isDestroyed() && win.isFocused() && !wc.isFocused()) wc.focus(); };
+  win.on('focus', () => wc.focus());
+  wc.on('did-finish-load', () => { wc.focus(); sendNav(); });
+  ipcMain.on('refocus', refocus);
+  // --- back navigation (mouse button on screen + Esc + Alt+Left + mouse back button) ---
+  const sendNav = () => { if (!win.isDestroyed()) wc.send('nav-state', wc.canGoBack()); };
+  const goBack = () => { if (wc.canGoBack()) wc.goBack(); };
+  ['did-navigate', 'did-navigate-in-page', 'did-frame-finish-load'].forEach(ev => wc.on(ev, sendNav));
+  ipcMain.on('nav-ready', sendNav);
+  ipcMain.on('nav-back', goBack);
+  win.on('app-command', (e, cmd) => { if (cmd === 'browser-backward') goBack(); else if (cmd === 'browser-forward' && wc.canGoForward()) wc.goForward(); });
+  // right-click menu: copy / paste etc.
+  wc.on('context-menu', (e, p) => {
+    const t = [];
+    if (p.isEditable) t.push({ role: 'undo' }, { role: 'redo' }, { type: 'separator' }, { role: 'cut' });
+    if (p.isEditable || p.selectionText) t.push({ role: 'copy' });
+    if (p.isEditable) t.push({ role: 'paste' }, { role: 'selectAll' });
+    if (t.length) Menu.buildFromTemplate(t).popup();
+  });
+  // Esc = Back, unless user is typing, a popup/modal is open, or fullscreen
+  const escBack = () => wc.executeJavaScript(`(function(){var a=document.activeElement;
+    if(a&&(/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)||a.isContentEditable))return false;
+    return !document.querySelector('dialog[open],[role=dialog],[role=alertdialog],[aria-modal=true],.modal.show,.modal.open,.swal2-container,.ant-modal,.MuiDialog-root');})()`, true)
+    .then(ok => { if (ok) goBack(); }).catch(() => {});
   wc.setWindowOpenHandler(({ url }) => {
     if (url.startsWith(origin)) return { action: 'allow' };
     shell.openExternal(url); return { action: 'deny' };
@@ -27,7 +55,7 @@ function create() {
     if (k === 'F5' && i.shift || k === 'F5' && c || c && i.shift && k.toLowerCase() === 'r') wc.reloadIgnoringCache();
     else if (k === 'F5' || c && k.toLowerCase() === 'r') wc.reload();
     else if (k === 'F11') win.setFullScreen(!win.isFullScreen());
-    else if (k === 'Escape' && win.isFullScreen()) win.setFullScreen(false);
+    else if (k === 'Escape') { if (win.isFullScreen()) win.setFullScreen(false); else { escBack(); h = false; } }
     else if (i.alt && k === 'ArrowLeft') { if (wc.canGoBack()) wc.goBack(); }
     else if (i.alt && k === 'ArrowRight') { if (wc.canGoForward()) wc.goForward(); }
     else if (i.alt && k === 'Home') win.loadURL(cfg.url);
