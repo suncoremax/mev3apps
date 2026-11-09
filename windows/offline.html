@@ -1,0 +1,6 @@
+<!doctype html><meta charset="utf-8"><title>Offline</title>
+<body style="font-family:Segoe UI,sans-serif;display:grid;place-items:center;height:100vh;margin:0;background:#f4f5f7;color:#222;text-align:center">
+<div><h2>No connection</h2><p>Check your internet. Retrying automatically…</p><button id=b style="padding:10px 22px;font-size:16px;cursor:pointer">Retry now</button></div>
+<script>const u=new URLSearchParams(location.search).get('u');
+b.onclick=()=>location.href=u;
+setInterval(()=>fetch(u,{mode:'no-cors'}).then(()=>location.href=u).catch(()=>{}),5000);</script>
